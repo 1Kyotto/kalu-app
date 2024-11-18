@@ -17,7 +17,6 @@ return new class extends Migration
             $table->unsignedBigInteger('positions_id')->nullable();
             $table->date('date_entry');
             $table->enum('status', ['active', 'inactive']);
-            $table->timestamps();
 
             $table->foreign('users_id')->references('id')->on('users');
             $table->foreign('positions_id')->references('id')->on('positions');
