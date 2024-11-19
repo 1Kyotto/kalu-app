@@ -15,9 +15,9 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('employees_id')->nullable();
             $table->enum('permission_type', ['vacations', 'illness', 'personal']);
-            $table->date('date_request');
-            $table->date('date_start');
-            $table->date('date_end');
+            $table->date('request_date');
+            $table->date('start_date');
+            $table->date('end_date');
             $table->enum('status', ['approved', 'pending', 'denied']);
             $table->text('reason');
 

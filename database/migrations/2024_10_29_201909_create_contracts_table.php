@@ -14,11 +14,6 @@ return new class extends Migration
         Schema::create('contracts', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('employees_id')->nullable();
-            $table->enum('contract_type', ['defined', 'indefinite']);
-            $table->enum('status', ['active', 'inactive']);
-            $table->date('date_start');
-            $table->date('date_end')->nullable();
-            $table->string('salary');
             $table->string('pdf_url');
             $table->timestamps();
 

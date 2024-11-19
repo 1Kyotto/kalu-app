@@ -2,9 +2,10 @@
 
 namespace Database\Seeders;
 
+use App\Models\Employed;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use App\Models\User;
+use Faker\Factory as Faker;
 
 class EmployedSeeder extends Seeder
 {
@@ -13,15 +14,55 @@ class EmployedSeeder extends Seeder
      */
     public function run(): void
     {
-        DB::table('employees')->insert([
-            ['id' => 1, 'user_id' => 1, 'positions_id' => 1, 'date_entry' => '', 'status' => 'active'],
-            ['id' => 2, 'user_id' => 2, 'positions_id' => 1, 'date_entry' => '', 'status' => 'active'],
-            ['id' => 3, 'user_id' => 3, 'positions_id' => 2, 'date_entry' => '', 'status' => 'active'],
-            ['id' => 4, 'user_id' => 4, 'positions_id' => 2, 'date_entry' => '', 'status' => 'active'],
-            ['id' => 5, 'user_id' => 5, 'positions_id' => 3, 'date_entry' => '', 'status' => 'active'],
-            ['id' => 6, 'user_id' => 6, 'positions_id' => 3, 'date_entry' => '', 'status' => 'active'],
-            ['id' => 7, 'user_id' => 7, 'positions_id' => 3, 'date_entry' => '', 'status' => 'active'],
-            ['id' => 8, 'user_id' => 8, 'positions_id' => 3, 'date_entry' => '', 'status' => 'active'],
+        $faker = Faker::create();
+
+        Employed::create([
+            'users_id' => 1,
+            'positions_id' => 1,
+            'entry_date' => $faker->dateTimeBetween('-2 years', 'now')->format('Y-m-d'),
+            'status' => 'activo'
+        ]);
+        Employed::create([
+            'users_id' => 2,
+            'positions_id' => 1,
+            'entry_date' => $faker->dateTimeBetween('-2 years', 'now')->format('Y-m-d'),
+            'status' => 'activo'
+        ]);
+        Employed::create([
+            'users_id' => 3,
+            'positions_id' => 2,
+            'entry_date' => $faker->dateTimeBetween('-2 years', 'now')->format('Y-m-d'),
+            'status' => 'activo'
+        ]);
+        Employed::create([
+            'users_id' => 4,
+            'positions_id' => 2,
+            'entry_date' => $faker->dateTimeBetween('-2 years', 'now')->format('Y-m-d'),
+            'status' => 'activo'
+        ]);
+        Employed::create([
+            'users_id' => 5,
+            'positions_id' => 3,
+            'entry_date' => $faker->dateTimeBetween('-2 years', 'now')->format('Y-m-d'),
+            'status' => 'activo'
+        ]);
+        Employed::create([
+            'users_id' => 6,
+            'positions_id' => 3,
+            'entry_date' => $faker->dateTimeBetween('-2 years', 'now')->format('Y-m-d'),
+            'status' => 'activo'
+        ]);
+        Employed::create([
+            'users_id' => 7,
+            'positions_id' => 3,
+            'entry_date' => $faker->dateTimeBetween('-2 years', 'now')->format('Y-m-d'),
+            'status' => 'activo'
+        ]);
+        Employed::create([
+            'users_id' => 8,
+            'positions_id' => 3,
+            'entry_date' => $faker->dateTimeBetween('-2 years', 'now')->format('Y-m-d'),
+            'status' => 'activo'
         ]);
     }
 }

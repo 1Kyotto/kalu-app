@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('evaluations', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('employees_id')->nullable();
-            $table->date('date_evaluation');
+            $table->date('evaluation_date');
             $table->text('comments');
             $table->unsignedInteger('score');
 

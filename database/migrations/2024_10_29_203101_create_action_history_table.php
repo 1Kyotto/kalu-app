@@ -13,11 +13,11 @@ return new class extends Migration
     {
         Schema::create('action_history', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('users_id')->nullable();
+            $table->unsignedBigInteger('user_id')->nullable();
             $table->text('description');
             $table->date('date_action');
 
-            $table->foreign('users_id')->references('id')->on('users');
+            $table->foreign('user_id')->references('id')->on('users');
         });
     }
 

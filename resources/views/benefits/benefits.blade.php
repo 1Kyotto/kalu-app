@@ -1,7 +1,7 @@
 @extends('template.master')
 
 @section('content')
-<div class="bg-[#f5f5f5] border border-[#f5f5f5] h-[100%] rounded p-3 flex flex-col">
+<div class="h-[100%] rounded p-3 flex flex-col">
     <div class="flex flex-col items-center justify-center text-center">
         <h3 class="font-bold text-2xl text-[#ff66c4]">BENEFICIOS POR SER PARTE DE NUESTRA FAMILIA</h3>
         <p class="text-lg pt-4 max-w-[900px]">

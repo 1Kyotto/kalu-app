@@ -15,16 +15,15 @@ class LoginController
     public function login(Request $request)
     {
         $request->validate([
-            'rut' => 'required',
+            'email' => 'required',
             'password' => 'required',
         ]);
- 
-        $credentials = $request->only('rut', 'password');
+
+        $credentials = $request->only('email', 'password');
         if (Auth::attempt($credentials)) {
             return redirect()->route('leykarin.info');
         }
- 
-        return redirect()->back()->withErrors(['rut' => 'Credenciales inválidas']);
-       
+
+        return redirect()->back()->withErrors(['email' => 'Credenciales inválidas']);
     }
 }
