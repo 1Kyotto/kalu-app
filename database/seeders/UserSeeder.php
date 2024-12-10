@@ -6,6 +6,8 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Faker\Factory as Faker;
 use App\Models\User;
+use App\Models\Role;
+use Illuminate\Support\Facades\Hash;
 
 class UserSeeder extends Seeder
 {
@@ -16,76 +18,114 @@ class UserSeeder extends Seeder
     {
         $faker = Faker::create();
 
-        User::create([
-            'name' => 'Martín González',
-            'rut' => '12345678-9',
-            'email' => 'martin.gonzalez@example.com',
-            'password' => bcrypt('password1'),
-            'cellphone' => '987654321',
-            'address' => 'Calle Falsa 123, Santiago, Chile',
-        ]);
+        $user = User::where('rut', '12345678-9')->first();
+        
+        if (!$user) {
+            $user = User::create([
+                'name' => 'Martín González',
+                'rut' => '12345678-9',
+                'email' => 'martin.gonzalez@example.com',
+                'password' => Hash::make('password123'),
+                'cellphone' => '987654321',
+                'address' => 'Calle Falsa 123, Santiago, Chile',
+            ]);
+        }
 
-        User::create([
-            'name' => 'Ana Pérez',
-            'rut' => '12314357-7',
-            'email' => 'ana.perez@example.com',
-            'password' => bcrypt('password2'),
-            'cellphone' => '923456789',
-            'address' => 'Av. Libertador Bernardo OHiggins 456, Santiago, Chile',
-        ]);
+        $adminRole = Role::where('name', 'admin')->first();
+        
+        if ($adminRole && !$user->hasRole('admin')) {
+            $user->assignRole($adminRole);
+        }
 
-        User::create([
-            'name' => 'Luis Fernández',
-            'rut' => '20789546-4',
-            'email' => 'luis.fernandez@example.com',
-            'password' => bcrypt('password3'),
-            'cellphone' => '956789012',
-            'address' => 'Calle Las Condes 1000, Santiago, Chile',
-        ]);
+        $user = User::where('rut', '12314357-7')->first();
+        
+        if (!$user) {
+            $user = User::create([
+                'name' => 'Ana Pérez',
+                'rut' => '12314357-7',
+                'email' => 'ana.perez@example.com',
+                'password' => bcrypt('password2'),
+                'cellphone' => '923456789',
+                'address' => 'Av. Libertador Bernardo OHiggins 456, Santiago, Chile',
+            ]);
+        }
 
-        User::create([
-            'name' => 'Marta López',
-            'rut' => '14850324-8',
-            'email' => 'marta.lopez@example.com',
-            'password' => bcrypt('password4'),
-            'cellphone' => '967890123',
-            'address' => 'Calle El Sol 321, Temuco, Chile',
-        ]);
+        $user = User::where('rut', '20789546-4')->first();
+        
+        if (!$user) {
+            $user = User::create([
+                'name' => 'Luis Fernández',
+                'rut' => '20789546-4',
+                'email' => 'luis.fernandez@example.com',
+                'password' => bcrypt('password3'),
+                'cellphone' => '956789012',
+                'address' => 'Calle Las Condes 1000, Santiago, Chile',
+            ]);
+        }
 
-        User::create([
-            'name' => 'Ricardo Herrera',
-            'rut' => '19032775-1',
-            'email' => 'ricardo.herrera@example.com',
-            'password' => bcrypt('password5'),
-            'cellphone' => '978901234',
-            'address' => 'Calle Santa Rosa 567, Valparaíso, Chile',
-        ]);
+        $user = User::where('rut', '14850324-8')->first();
+        
+        if (!$user) {
+            $user = User::create([
+                'name' => 'Marta López',
+                'rut' => '14850324-8',
+                'email' => 'marta.lopez@example.com',
+                'password' => bcrypt('password4'),
+                'cellphone' => '967890123',
+                'address' => 'Calle El Sol 321, Temuco, Chile',
+            ]);
+        }
 
-        User::create([
-            'name' => 'Valentina Díaz',
-            'rut' => '16789428-3',
-            'email' => 'valentina.diaz@example.com',
-            'password' => bcrypt('password6'),
-            'cellphone' => '989012345',
-            'address' => 'Av. Bernardo O\'Higgins 890, Antofagasta, Chile',
-        ]);
+        $user = User::where('rut', '19032775-1')->first();
+        
+        if (!$user) {
+            $user = User::create([
+                'name' => 'Ricardo Herrera',
+                'rut' => '19032775-1',
+                'email' => 'ricardo.herrera@example.com',
+                'password' => bcrypt('password5'),
+                'cellphone' => '978901234',
+                'address' => 'Calle Santa Rosa 567, Valparaíso, Chile',
+            ]);
+        }
 
-        User::create([
-            'name' => 'Tomás Vargas',
-            'rut' => '22325012-5',
-            'email' => 'tomas.vargas@example.com',
-            'password' => bcrypt('password7'),
-            'cellphone' => '990123456',
-            'address' => 'Calle Los Pinos 4321, Iquique, Chile',
-        ]);
+        $user = User::where('rut', '16789428-3')->first();
+        
+        if (!$user) {
+            $user = User::create([
+                'name' => 'Valentina Díaz',
+                'rut' => '16789428-3',
+                'email' => 'valentina.diaz@example.com',
+                'password' => bcrypt('password6'),
+                'cellphone' => '989012345',
+                'address' => 'Av. Bernardo O\'Higgins 890, Antofagasta, Chile',
+            ]);
+        }
 
-        User::create([
-            'name' => 'Isabel Castro',
-            'rut' => '19327830-0',
-            'email' => 'isabel.castro@example.com',
-            'password' => bcrypt('password8'),
-            'cellphone' => '901234567',
-            'address' => 'Calle San Martín 6789, Arica, Chile',
-        ]);
+        $user = User::where('rut', '22325012-5')->first();
+        
+        if (!$user) {
+            $user = User::create([
+                'name' => 'Tomás Vargas',
+                'rut' => '22325012-5',
+                'email' => 'tomas.vargas@example.com',
+                'password' => bcrypt('password7'),
+                'cellphone' => '990123456',
+                'address' => 'Calle Los Pinos 4321, Iquique, Chile',
+            ]);
+        }
+
+        $user = User::where('rut', '19327830-0')->first();
+        
+        if (!$user) {
+            $user = User::create([
+                'name' => 'Isabel Castro',
+                'rut' => '19327830-0',
+                'email' => 'isabel.castro@example.com',
+                'password' => bcrypt('password8'),
+                'cellphone' => '901234567',
+                'address' => 'Calle San Martín 6789, Arica, Chile',
+            ]);
+        }
     }
 }
