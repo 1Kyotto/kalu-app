@@ -6,7 +6,8 @@
         <link rel="icon" type="image/x-icon" href="{{ asset('images/simple_logo.png') }}">
         
         <title>Kalu - Iniciar Sesión</title>
-        @vite('resources/css/app.css')
+        @viteReactRefresh
+        @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="bg-[#07060B] flex flex-col items-center justify-center w-screen h-screen text-white font-montserrat overflow-hidden">
         @if(session('success'))

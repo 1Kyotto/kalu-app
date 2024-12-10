@@ -6,6 +6,7 @@ export default defineConfig({
         laravel({
             input: ['resources/css/app.css', 'resources/js/app.js'],
             refresh: true,
+            buildDirectory: 'build'
         }),
     ],
     build: {
@@ -15,6 +16,11 @@ export default defineConfig({
             output: {
                 manualChunks: undefined
             }
+        }
+    },
+    server: {
+        hmr: {
+            host: 'localhost'
         }
     }
 });
