@@ -2,8 +2,8 @@
     "private": true,
     "type": "module",
     "scripts": {
-        "build": "vite build && cp public/build/.vite/manifest.json public/build/manifest.json",
-        "dev": "vite"
+        "dev": "vite",
+        "build": "vite build && copy public\\build\\.vite\\manifest.json public\\build\\manifest.json"
     },
     "devDependencies": {
         "autoprefixer": "^10.4.20",
