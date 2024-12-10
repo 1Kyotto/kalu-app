@@ -29,7 +29,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/politicas-reglamento', [DashboardController::class, 'politicas'])->name('politicas.info');
 
     Route::get('/perfil/{id}', [DashboardController::class, 'edit'])->name('user.profile');
-    Route::put('/perfil/{id}', [DashboardController::class, 'update'])->name('user.profile.update');
 
     Route::get('/download/contract/{id}', [DashboardController::class, 'download'])->name('contract.download');
 
