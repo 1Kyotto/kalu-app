@@ -7,11 +7,12 @@ use App\Models\Employed;
 
 class Attendance extends Model
 {
-    protected $table = 'attendances';
+    protected $table = 'attendance';
     protected $fillable = ['arrival', 'departure', 'comments'];
+    public $timestamps = false;
 
     public function employed()
     {
-        return $this->belongsTo(Employed::class);
+        return $this->belongsTo(Employed::class, 'employees_id');
     }
 }

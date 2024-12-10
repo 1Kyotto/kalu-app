@@ -15,7 +15,7 @@ class ContractSeeder extends Seeder
      */
     public function run(): void
     {
-        $employees = Employed::all();
+        $employees = Employed::whereBetween('id', [1, 7])->get();
 
         foreach ($employees as $employed) {
             Contract::create([

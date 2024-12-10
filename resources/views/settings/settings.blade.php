@@ -2,9 +2,23 @@
 
 @section('content')
 <div class="w-full h-full">
+    @if(session('success'))
+        <div class="bg-green-500/10 border border-green-500 text-green-500 px-6 py-4 rounded-lg mx-3 mt-3">
+            {{ session('success') }}
+        </div>
+    @endif
+
+    @if(session('error'))
+        <div class="bg-red-500/10 border border-red-500 text-red-500 px-6 py-4 rounded-lg mx-3 mt-3">
+            {{ session('error') }}
+        </div>
+    @endif
+
     <div class="py-6 px-3 border-b border-[#444852]">
         <h3 class="text-xl">Configuración de Cuenta</h3>
     </div>
+
+    <!-- Información Personal -->
     <div class="pb-4 pt-8 px-3 border-b border-[#444852] text-white">
         <h3 class="text-md pb-3">Información Personal</h3>
         <form action="{{ route('user.profile.update', $employee->id) }}" method="POST">
@@ -13,8 +27,15 @@
         
             <div class="flex items-center justify-between gap-10">
                 <div class="mb-4 w-1/2">
-                    <label for="name" class="block font-bold mb-2">Nombre Completo</label>
-                    <input type="text" name="name" id="name" value="{{ old('name', $employee->user ? $employee->user->name : '') }}" class="w-full border border-gray-300 bg-[#07060B] p-2 rounded focus:outline-none focus:border-blue-500">
+                    <label for="name" class="block font-bold mb-2">Nombre Completo *</label>
+                    <input type="text" 
+                           name="name" 
+                           id="name" 
+                           value="{{ old('name', $employee->user ? $employee->user->name : '') }}" 
+                           class="w-full border @error('name') border-red-500 @else border-gray-300 @enderror bg-[#07060B] p-2 rounded focus:outline-none focus:border-[#ff66c4]">
+                    @error('name')
+                        <span class="text-red-500 text-sm">{{ $message }}</span>
+                    @enderror
                 </div>
 
                 <div class="mb-4 w-1/2">
@@ -42,6 +63,53 @@
             </div>
         </form>
     </div>
+
+    <!-- Cambio de Contraseña -->
+    <div class="pb-4 pt-8 px-3 border-b border-[#444852] text-white">
+        <h3 class="text-md pb-3">Cambiar Contraseña</h3>
+        <form action="{{ route('user.password.update', $employee->id) }}" method="POST" class="max-w-lg">
+            @csrf
+            @method('PUT')
+            
+            <div class="mb-4">
+                <label for="current_password" class="block font-bold mb-2">Contraseña Actual *</label>
+                <input type="password" 
+                       name="current_password" 
+                       id="current_password" 
+                       class="w-full border @error('current_password') border-red-500 @else border-gray-300 @enderror bg-[#07060B] p-2 rounded focus:outline-none focus:border-[#ff66c4]">
+                @error('current_password')
+                    <span class="text-red-500 text-sm">{{ $message }}</span>
+                @enderror
+            </div>
+
+            <div class="mb-4">
+                <label for="password" class="block font-bold mb-2">Nueva Contraseña *</label>
+                <input type="password" 
+                       name="password" 
+                       id="password" 
+                       class="w-full border @error('password') border-red-500 @else border-gray-300 @enderror bg-[#07060B] p-2 rounded focus:outline-none focus:border-[#ff66c4]">
+                @error('password')
+                    <span class="text-red-500 text-sm">{{ $message }}</span>
+                @enderror
+            </div>
+
+            <div class="mb-4">
+                <label for="password_confirmation" class="block font-bold mb-2">Confirmar Nueva Contraseña *</label>
+                <input type="password" 
+                       name="password_confirmation" 
+                       id="password_confirmation" 
+                       class="w-full border @error('password_confirmation') border-red-500 @else border-gray-300 @enderror bg-[#07060B] p-2 rounded focus:outline-none focus:border-[#ff66c4]">
+            </div>
+
+            <div class="flex justify-end">
+                <button type="submit" class="bg-[#ff66c4] text-white px-4 py-2 rounded hover:bg-[#e450ab] focus:outline-none">
+                    Cambiar Contraseña
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Contrato -->
     <div class="pb-4 pt-8 px-3 border-b border-[#444852] text-white flex flex-col items-end">
         <h3 class="text-md pb-3 font-bold">Descarga tu Contrato</h3>
         @if($employee->contract && $employee->contract->pdf_url)

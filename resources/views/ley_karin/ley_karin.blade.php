@@ -1,7 +1,7 @@
 @extends('template.master')
 
 @section('content')
-<div class="p-3 flex flex-col overflow-y-scroll max-h-[598px]">
+<div class="p-3 flex flex-col">
     <div class="flex flex-col items-center justify-center">
         <h3 class="font-bold text-2xl text-[#ff66c4]">¿QUÉ ES LA LEY KARIN?</h3>
         <p class="text-lg pt-6">La ley N°21.643 modifica el Código del Trabajo en materia de prevención, investigación y sanción del acoso laboral, sexual y violencia en el trabajo.
@@ -19,8 +19,8 @@
 
     <div class="flex gap-6 mt-6 w-full h-30 items-start justify-between">
         <div class="flex flex-col items-start gap-1">
-            <p>Para realizar una denuncia, favor contactarse con el correo: </p>
-            <span href="#" class="text-[#ff66c4] font-bold">gonzalezcontreras.fp@gmail.com</span>
+            <p>Para realizar una denuncia, favor rellenar el siguiente formulario: </p>
+            <a href="https://docs.google.com/forms/d/e/1FAIpQLSdU7-oyE1n2fhxPrloveBLSrp2YBTxV2Z0AERzUYeFqEs4K5A/viewform" class="rounded-lg bg-[#ff66c4] w-[50%] text-center text-white px-4 py-2" target="_blank">Contáctanos</a>
         </div>
         <div class="flex flex-col items-start gap-2">
             <p>Para más información sobre la Ley</p>

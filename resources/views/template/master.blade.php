@@ -3,6 +3,8 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="csrf-token" content="{{ csrf_token() }}">
+        <link rel="icon" type="image/x-icon" href="{{ asset('images/simple_logo.png') }}">
 
         <title>Kalú</title>
         @vite('resources/css/app.css')
@@ -12,12 +14,12 @@
             <div class="flex flex-col h-[550px] justify-between">
                 <div class="flex gap-3 px-8 items-center justify-between">
                     <div class="flex items-center gap-4">
-                        <a href="{{ route('user.profile', ['id' => auth()->user()->employee->id ?? 0]) }}" class="rounded-full border w-8 h-8">
+                        <a href="{{ route('user.profile', ['id' => auth()->user()->employed->id ?? 0]) }}" class="rounded-full border w-8 h-8">
                             <img src="{{ asset('images/avatar.svg') }}" alt="Avatar profile" class="w-full h-full text-white">
                         </a>
                         <div class="flex flex-col">
                             <span class="font-bold">{{ auth()->check() ? auth()->user()->name : 'Invitado' }}</span>
-                            <span class="text-sm">{{ auth()->check() && auth()->user()->employee && auth()->user()->employee->position ? auth()->user()->employee->position->name : 'Sin cargo' }}</span>
+                            <span class="text-sm">{{ auth()->check() && auth()->user()->employed && auth()->user()->employed->position ? auth()->user()->employed->position->name : 'Sin cargo' }}</span>
                         </div>
                     </div>
                     <div class="relative" onclick="toggleDropdown(); highlightSettingsIcon()">
@@ -33,7 +35,7 @@
                         <div id="dropdownMenu" class="hidden absolute left-[-160px] mt-2 w-48 bg-[#181C23] rounded-lg border border-[#ff66c4] shadow-lg text-white z-10">
                             <ul class="py-1">
                                 <li>
-                                    <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="block px-2 py-2 hover:bg-gray-600 hover:rounded-md">Logout</a>
+                                    <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="block px-2 py-2 hover:bg-gray-600 hover:rounded-md">Cerrar Sesión</a>
                                 </li>
                             </ul>
                         </div>
@@ -49,7 +51,7 @@
 
                 <div class="flex flex-col mt-8">
                     <ul class="flex flex-col w-full">
-                        @if(auth()->check() && auth()->user()->hasRole('Admin'))
+                        @if(auth()->check() && (auth()->user()->hasRole('Admin Nivel 1') || auth()->user()->hasRole('Administrativo')))
                         <a href="{{ route('empleados.info') }}" class="w-full flex items-center gap-4 px-8 py-5 {{ request()->routeIs('empleados.info') ? 'bg-[#181C23] border-l-2 border-[#ff66c4] pl-12' : 'border-b border-[#181C23]' }}">
                             <div class="w-7 h-7 rounded-lg flex items-center justify-center bg-[#717171]">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" viewBox="0 0 24 24" fill="none">
@@ -62,6 +64,7 @@
                             Empleados
                         </a>
                         @endif
+                        @if(auth()->check() && auth()->user()->hasRole('Empleado'))
                         <a href="{{ route('liquidaciones.info') }}" class="w-full flex items-center gap-4 px-8 py-5 {{ request()->routeIs('liquidaciones.info') ? 'bg-[#181C23] border-l-2 border-[#ff66c4] pl-12' : 'border-b border-[#181C23]' }}">
                             <div class="w-7 h-7 rounded-lg flex items-center justify-center bg-[#717171]">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" viewBox="0 0 24 24" fill="none">
@@ -74,7 +77,8 @@
                             </div>
                             Liquidaciones
                         </a>
-                        <a href="{{ route('solicitudes.info') }}" class="w-full flex items-center gap-4 px-8 py-5 {{ request()->routeIs('solicitudes.info') ? 'bg-[#181C23] border-l-2 border-[#ff66c4] pl-12' : 'border-b border-[#181C23]' }}">
+                        @endif
+                        <a href="{{ route('permissions.index') }}" class="w-full flex items-center gap-4 px-8 py-5 {{ request()->routeIs('permissions.index') ? 'bg-[#181C23] border-l-2 border-[#ff66c4] pl-12' : 'border-b border-[#181C23]' }}">
                             <div class="w-7 h-7 rounded-lg flex items-center justify-center bg-[#717171]">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" viewBox="0 0 24 24" fill="none">
                                     <path d="M17 15.8462C17 14.8266 17.8954 14 19 14C20.1046 14 21 14.8266 21 15.8462C21 16.2137 20.8837 16.5561 20.6831 16.8438C20.0854 17.7012 19 18.5189 19 19.5385V20M18.9902 22H18.9992" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
@@ -124,7 +128,7 @@
                 </div>
             </div>
         </aside>
-        <main class="col-span-9 flex items-center justify-center py-2 px-6 rounded-l-xl bg-[#181C23]">
+        <main class="col-span-9 flex items-center justify-center py-2 px-6 rounded-l-xl bg-[#181C23] overflow-y-auto max-h-[100vh]">
             @yield('content')
         </main>
     </body>

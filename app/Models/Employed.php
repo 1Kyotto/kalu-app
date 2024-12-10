@@ -13,7 +13,12 @@ use App\Models\Evaluation;
 class Employed extends Model
 {
     protected $table = 'employees';
-    protected $fillable = ['entry_date', 'status'];
+    protected $fillable = [
+        'users_id',
+        'positions_id',
+        'entry_date',
+        'status'
+    ];
     public $timestamps = false;
 
     public function position()
@@ -33,16 +38,16 @@ class Employed extends Model
 
     public function permissions()
     {
-        return $this->hasMany(Permission::class);
+        return $this->hasMany(Permission::class, 'employees_id');
     }
 
     public function attendances()
     {
-        return $this->hasMany(Attendance::class);
+        return $this->hasMany(Attendance::class, 'employees_id');
     }
 
     public function evaluations()
     {
-        return $this->hasMany(Evaluation::class);
+        return $this->hasMany(Evaluation::class, 'employees_id');
     }
 }

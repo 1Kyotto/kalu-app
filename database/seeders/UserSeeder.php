@@ -39,7 +39,7 @@ class UserSeeder extends Seeder
             'rut' => '20789546-4',
             'email' => 'luis.fernandez@example.com',
             'password' => bcrypt('password3'),
-            'cellphone' => '+56 9 5678 9012',
+            'cellphone' => '956789012',
             'address' => 'Calle Las Condes 1000, Santiago, Chile',
         ]);
 
@@ -48,7 +48,7 @@ class UserSeeder extends Seeder
             'rut' => '14850324-8',
             'email' => 'marta.lopez@example.com',
             'password' => bcrypt('password4'),
-            'cellphone' => '+56 9 6789 0123',
+            'cellphone' => '967890123',
             'address' => 'Calle El Sol 321, Temuco, Chile',
         ]);
 
@@ -57,7 +57,7 @@ class UserSeeder extends Seeder
             'rut' => '19032775-1',
             'email' => 'ricardo.herrera@example.com',
             'password' => bcrypt('password5'),
-            'cellphone' => '+56 9 7890 1234',
+            'cellphone' => '978901234',
             'address' => 'Calle Santa Rosa 567, Valparaíso, Chile',
         ]);
 
@@ -66,7 +66,7 @@ class UserSeeder extends Seeder
             'rut' => '16789428-3',
             'email' => 'valentina.diaz@example.com',
             'password' => bcrypt('password6'),
-            'cellphone' => '+56 9 8901 2345',
+            'cellphone' => '989012345',
             'address' => 'Av. Bernardo O\'Higgins 890, Antofagasta, Chile',
         ]);
 
@@ -75,7 +75,7 @@ class UserSeeder extends Seeder
             'rut' => '22325012-5',
             'email' => 'tomas.vargas@example.com',
             'password' => bcrypt('password7'),
-            'cellphone' => '+56 9 9012 3456',
+            'cellphone' => '990123456',
             'address' => 'Calle Los Pinos 4321, Iquique, Chile',
         ]);
 
@@ -84,7 +84,7 @@ class UserSeeder extends Seeder
             'rut' => '19327830-0',
             'email' => 'isabel.castro@example.com',
             'password' => bcrypt('password8'),
-            'cellphone' => '+56 9 0123 4567',
+            'cellphone' => '901234567',
             'address' => 'Calle San Martín 6789, Arica, Chile',
         ]);
     }

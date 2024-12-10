@@ -27,6 +27,7 @@ class User extends Authenticatable
         'password',
         'cellphone',
         'address',
+        'first_login',
     ];
 
     /**
@@ -58,7 +59,7 @@ class User extends Authenticatable
         return $this->belongsToMany(Role::class, 'role_user', 'users_id', 'roles_id');
     }
 
-    public function employee()
+    public function employed()
     {
         return $this->hasOne(Employed::class, 'users_id');
     }
@@ -66,5 +67,26 @@ class User extends Authenticatable
     public function hasRole($roleName)
     {
         return $this->roles()->where('name', $roleName)->exists();
+    }
+
+    public function getCellphoneAttribute($value)
+    {
+        if (!$value) return '';
+        
+        // Eliminar todo excepto números
+        $numbers = preg_replace('/[^0-9]/', '', $value);
+        
+        // Si es número chileno (9 dígitos)
+        if (strlen($numbers) == 9) {
+            return substr($numbers, 0, 1) . ' ' . substr($numbers, 1, 4) . ' ' . substr($numbers, 5, 4);
+        }
+        
+        return $value;
+    }
+
+    public function setCellphoneAttribute($value)
+    {
+        // Eliminar todo excepto números al guardar
+        $this->attributes['cellphone'] = preg_replace('/[^0-9]/', '', $value);
     }
 }
