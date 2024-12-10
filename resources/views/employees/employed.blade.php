@@ -380,7 +380,7 @@
         e.preventDefault();
         const formData = new FormData(this);
 
-        fetch('/api/employees/contract/upload', {
+        fetch('{{ route("empleados.contract.upload") }}', {
             method: 'POST',
             body: formData,
             headers: {
@@ -392,10 +392,14 @@
             if (data.success) {
                 closeUploadModal();
                 window.location.reload();
+            } else {
+                // Mostrar mensaje de error
+                alert('Error al subir el contrato. Por favor, inténtalo de nuevo.');
             }
         })
         .catch(error => {
             console.error('Error:', error);
+            alert('Error al subir el contrato. Por favor, inténtalo de nuevo.');
         });
     });
 

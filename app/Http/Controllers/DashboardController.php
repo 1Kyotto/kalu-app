@@ -261,7 +261,7 @@ class DashboardController extends Controller
     public function uploadContract(Request $request)
     {
         $request->validate([
-            'employee_id' => 'required|exists:employees,id',
+            'employee_id' => 'required|exists:employed,id',
             'contract' => 'required|file|mimes:pdf|max:10240'
         ]);
 

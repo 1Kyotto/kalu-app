@@ -17,6 +17,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/empleados', [DashboardController::class, 'empleados'])->name('empleados.info');
     Route::get('/empleados/create', [DashboardController::class, 'createEmpleado'])->name('empleados.create');
     Route::post('/empleados', [DashboardController::class, 'storeEmpleado'])->name('empleados.store');
+    Route::post('/empleados/contract/upload', [DashboardController::class, 'uploadContract'])->name('empleados.contract.upload');
 
     Route::get('/ley-karin', [DashboardController::class, 'leykarin'])->name('leykarin.info');
 
