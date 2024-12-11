@@ -383,23 +383,41 @@
         fetch('{{ route("empleados.contract.upload") }}', {
             method: 'POST',
             body: formData,
-            headers: {
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-            }
+            credentials: 'same-origin'
         })
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(err => Promise.reject(err));
+            }
+            return response.json();
+        })
         .then(data => {
             if (data.success) {
                 closeUploadModal();
+                // Mostrar mensaje de éxito
+                const successDiv = document.createElement('div');
+                successDiv.className = 'bg-green-500 text-white px-6 py-4 rounded-lg mb-6 flex items-center justify-between';
+                successDiv.innerHTML = `
+                    <span>${data.message || 'Contrato subido exitosamente'}</span>
+                    <button onclick="this.parentElement.remove()" class="text-white">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                        </svg>
+                    </button>
+                `;
+                document.querySelector('.w-full.h-full').insertBefore(successDiv, document.querySelector('.w-full.h-full').firstChild);
                 window.location.reload();
-            } else {
-                // Mostrar mensaje de error
-                alert('Error al subir el contrato. Por favor, inténtalo de nuevo.');
             }
         })
         .catch(error => {
             console.error('Error:', error);
-            alert('Error al subir el contrato. Por favor, inténtalo de nuevo.');
+            let errorMessage = 'Error al subir el contrato. Por favor, inténtalo de nuevo.';
+            if (error.message) {
+                errorMessage = error.message;
+            } else if (error.errors) {
+                errorMessage = Object.values(error.errors).flat().join('\n');
+            }
+            alert(errorMessage);
         });
     });
 

@@ -260,31 +260,45 @@ class DashboardController extends Controller
 
     public function uploadContract(Request $request)
     {
-        $request->validate([
-            'employee_id' => 'required|exists:employed,id',
-            'contract' => 'required|file|mimes:pdf|max:10240'
-        ]);
-
-        $employee = Employed::findOrFail($request->employee_id);
-        $path = $request->file('contract')->store('contracts', 'public');
-
-        // Si ya existe un contrato, actualizar el pdf_url
-        if ($employee->contract) {
-            // Eliminar el archivo anterior si existe
-            if (Storage::disk('public')->exists($employee->contract->pdf_url)) {
-                Storage::disk('public')->delete($employee->contract->pdf_url);
-            }
-            $employee->contract->pdf_url = $path;
-            $employee->contract->save();
-        } else {
-            // Crear nuevo contrato
-            Contract::create([
-                'employees_id' => $employee->id,
-                'pdf_url' => $path
+        try {
+            $request->validate([
+                'employee_id' => 'required|exists:employed,id',
+                'contract' => 'required|file|mimes:pdf|max:10240'
             ]);
-        }
 
-        return response()->json(['success' => true]);
+            $employee = Employed::findOrFail($request->employee_id);
+            $path = $request->file('contract')->store('contracts', 'public');
+
+            // Si ya existe un contrato, actualizar el pdf_url
+            if ($employee->contract) {
+                // Eliminar el archivo anterior si existe
+                if (Storage::disk('public')->exists($employee->contract->pdf_url)) {
+                    Storage::disk('public')->delete($employee->contract->pdf_url);
+                }
+                $employee->contract->pdf_url = $path;
+                $employee->contract->save();
+            } else {
+                // Crear nuevo contrato
+                Contract::create([
+                    'employees_id' => $employee->id,
+                    'pdf_url' => $path
+                ]);
+            }
+
+            return response()->json(['success' => true, 'message' => 'Contrato subido exitosamente']);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error de validación',
+                'errors' => $e->errors()
+            ], 422);
+        } catch (\Exception $e) {
+            \Log::error('Error al subir contrato: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al subir el contrato'
+            ], 500);
+        }
     }
 
     public function download($id)
