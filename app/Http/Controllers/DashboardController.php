@@ -262,7 +262,7 @@ class DashboardController extends Controller
     {
         try {
             $request->validate([
-                'employee_id' => 'required|exists:employed,id',
+                'employee_id' => 'required|exists:employees,id',
                 'contract' => 'required|file|mimes:pdf|max:10240'
             ]);
 
