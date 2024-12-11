@@ -267,26 +267,47 @@ class DashboardController extends Controller
             ]);
 
             $employee = Employed::findOrFail($request->employee_id);
-            $path = $request->file('contract')->store('contracts', 'public');
-
-            // Si ya existe un contrato, actualizar el pdf_url
-            if ($employee->contract) {
-                // Eliminar el archivo anterior si existe
-                if (Storage::disk('public')->exists($employee->contract->pdf_url)) {
-                    Storage::disk('public')->delete($employee->contract->pdf_url);
-                }
-                $employee->contract->pdf_url = $path;
-                $employee->contract->save();
-            } else {
-                // Crear nuevo contrato
-                Contract::create([
-                    'employees_id' => $employee->id,
-                    'pdf_url' => $path
-                ]);
+            
+            // Asegurarse de que el directorio existe
+            $contractsPath = storage_path('app/public/contracts');
+            if (!file_exists($contractsPath)) {
+                mkdir($contractsPath, 0777, true);
             }
 
-            return response()->json(['success' => true, 'message' => 'Contrato subido exitosamente']);
+            // Generar un nombre único para el archivo
+            $fileName = 'contract_' . $employee->id . '_' . time() . '.pdf';
+            
+            try {
+                // Intentar mover el archivo
+                $path = $request->file('contract')->storeAs('contracts', $fileName, 'public');
+                
+                if (!$path) {
+                    throw new \Exception('No se pudo guardar el archivo');
+                }
+
+                // Si ya existe un contrato, actualizar el pdf_url
+                if ($employee->contract) {
+                    // Eliminar el archivo anterior si existe
+                    if (Storage::disk('public')->exists($employee->contract->pdf_url)) {
+                        Storage::disk('public')->delete($employee->contract->pdf_url);
+                    }
+                    $employee->contract->pdf_url = $path;
+                    $employee->contract->save();
+                } else {
+                    // Crear nuevo contrato
+                    Contract::create([
+                        'employees_id' => $employee->id,
+                        'pdf_url' => $path
+                    ]);
+                }
+
+                return response()->json(['success' => true, 'message' => 'Contrato subido exitosamente']);
+            } catch (\Exception $e) {
+                \Log::error('Error al guardar el archivo: ' . $e->getMessage());
+                throw new \Exception('Error al guardar el archivo: ' . $e->getMessage());
+            }
         } catch (\Illuminate\Validation\ValidationException $e) {
+            \Log::error('Error de validación: ' . json_encode($e->errors()));
             return response()->json([
                 'success' => false,
                 'message' => 'Error de validación',
@@ -296,7 +317,7 @@ class DashboardController extends Controller
             \Log::error('Error al subir contrato: ' . $e->getMessage());
             return response()->json([
                 'success' => false,
-                'message' => 'Error al subir el contrato'
+                'message' => 'Error al subir el contrato: ' . $e->getMessage()
             ], 500);
         }
     }
