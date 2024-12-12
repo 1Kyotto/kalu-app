@@ -70,35 +70,35 @@
         <form action="{{ route('user.password.update', $employee->id) }}" method="POST" class="max-w-lg">
             @csrf
             @method('PUT')
-            
+
             <div class="mb-4">
-                <label for="current_password" class="block font-bold mb-2">Contraseña Actual *</label>
-                <input type="password" 
-                       name="current_password" 
-                       id="current_password" 
+                <label for="current_password" class="block text-sm font-medium text-gray-300">Contraseña Actual</label>
+                <input type="password" name="current_password" id="current_password"
                        class="w-full border @error('current_password') border-red-500 @else border-gray-300 @enderror bg-[#07060B] p-2 rounded focus:outline-none focus:border-[#ff66c4]">
                 @error('current_password')
-                    <span class="text-red-500 text-sm">{{ $message }}</span>
+                    <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
                 @enderror
             </div>
 
             <div class="mb-4">
-                <label for="password" class="block font-bold mb-2">Nueva Contraseña *</label>
-                <input type="password" 
-                       name="password" 
-                       id="password" 
+                <label for="password" class="block text-sm font-medium text-gray-300">Nueva Contraseña</label>
+                <input type="password" name="password" id="password"
                        class="w-full border @error('password') border-red-500 @else border-gray-300 @enderror bg-[#07060B] p-2 rounded focus:outline-none focus:border-[#ff66c4]">
                 @error('password')
-                    <span class="text-red-500 text-sm">{{ $message }}</span>
+                    <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
                 @enderror
+                <p class="mt-1 text-sm text-gray-400">
+                    La contraseña debe tener al menos 8 caracteres, incluir mayúsculas, minúsculas, números y símbolos.
+                </p>
             </div>
 
             <div class="mb-4">
-                <label for="password_confirmation" class="block font-bold mb-2">Confirmar Nueva Contraseña *</label>
-                <input type="password" 
-                       name="password_confirmation" 
-                       id="password_confirmation" 
+                <label for="password_confirmation" class="block text-sm font-medium text-gray-300">Confirmar Nueva Contraseña</label>
+                <input type="password" name="password_confirmation" id="password_confirmation"
                        class="w-full border @error('password_confirmation') border-red-500 @else border-gray-300 @enderror bg-[#07060B] p-2 rounded focus:outline-none focus:border-[#ff66c4]">
+                @error('password_confirmation')
+                    <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
+                @enderror
             </div>
 
             <div class="flex justify-end">

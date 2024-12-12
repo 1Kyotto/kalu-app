@@ -52,7 +52,7 @@ class UserProfileController extends Controller
                 'password.confirmed' => 'La confirmación de la contraseña no coincide.',
                 'password.min' => 'La contraseña debe tener al menos 8 caracteres.',
                 'password.letters' => 'La contraseña debe contener al menos una letra.',
-                'password.mixed' => 'La contraseña debe contener mayúsculas y minúsculas.',
+                'password.mixed' => 'La contraseña debe contener al menos una letra mayúscula y una minúscula.',
                 'password.numbers' => 'La contraseña debe contener al menos un número.',
                 'password.symbols' => 'La contraseña debe contener al menos un símbolo.',
             ]);
@@ -61,39 +61,30 @@ class UserProfileController extends Controller
             
             // Verificar que el usuario autenticado es el dueño del perfil
             if ($employee->users_id !== auth()->id()) {
-                return redirect()->back()->with('error', 'No tienes permiso para realizar esta acción.');
+                return redirect()->back()
+                    ->with('error', 'No tienes permiso para realizar esta acción.');
             }
 
-            $user = $employee->user;
-
             // Verificar la contraseña actual
-            if (!Hash::check($request->current_password, $user->password)) {
-                Log::error('Contraseña actual incorrecta para el usuario ID: ' . $user->id);
+            if (!Hash::check($request->current_password, $employee->user->password)) {
                 return redirect()->back()
                     ->withErrors(['current_password' => 'La contraseña actual es incorrecta.']);
             }
 
-            Log::info('Actualizando contraseña para el usuario ID: ' . $user->id);
+            $employee->user->update([
+                'password' => Hash::make($request->password),
+                'first_login' => false
+            ]);
 
-            // Actualizar la contraseña
-            $user->forceFill([
-                'password' => Hash::make($request->password)
-            ])->save();
-
-            Log::info('Contraseña actualizada exitosamente para el usuario ID: ' . $user->id);
-
-            // Cerrar la sesión actual
-            Auth::logout();
-            $request->session()->invalidate();
-            $request->session()->regenerateToken();
-
-            return redirect('/')
-                ->with('success', 'Contraseña actualizada exitosamente. Por favor, inicia sesión nuevamente.');
-
+            return redirect()->back()->with('success', 'Contraseña actualizada exitosamente.');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return redirect()->back()
+                ->withErrors($e->validator)
+                ->withInput();
         } catch (\Exception $e) {
             Log::error('Error al actualizar contraseña: ' . $e->getMessage());
             return redirect()->back()
-                ->with('error', 'Hubo un error al actualizar la contraseña. Por favor, intente nuevamente.');
+                ->with('error', 'Hubo un error al cambiar la contraseña. ' . $e->getMessage());
         }
     }
 }
