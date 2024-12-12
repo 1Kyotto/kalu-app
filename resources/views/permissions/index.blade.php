@@ -84,14 +84,14 @@
                         <td class="px-6 py-4">
                             <div class="flex gap-2">
                                 <button type="button" 
-                                    onclick="showDetails({
+                                    onclick="showDetailsModal({
                                         id: {{ $permission->id }},
                                         permission_type: '{{ $permission->permission_type }}',
                                         start_date: '{{ $permission->start_date }}',
                                         end_date: '{{ $permission->end_date }}',
                                         request_date: '{{ $permission->request_date }}',
                                         status: '{{ $permission->status }}',
-                                        reason: '{{ addslashes($permission->reason) }}',
+                                        reason: '{{ str_replace("'", "\\'", $permission->reason) }}',
                                         @if($isAdmin)
                                         employee: {
                                             user: {
@@ -136,7 +136,7 @@
     <div class="bg-[#07060B] rounded-lg p-6 max-w-lg w-full mx-4" onclick="event.stopPropagation();">
         <div class="flex justify-between items-center mb-4">
             <h3 class="text-xl font-bold">Detalles de la Solicitud</h3>
-            <button type="button" onclick="hideDetails()" class="text-gray-400 hover:text-white">
+            <button type="button" onclick="hideDetailsModal()" class="text-gray-400 hover:text-white">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                 </svg>
@@ -176,24 +176,25 @@
 
 @section('scripts')
 <script>
+// Asegurarnos de que el código se ejecuta después de que el DOM está listo
 document.addEventListener('DOMContentLoaded', function() {
     // Cerrar el modal cuando se hace clic fuera de él
     const modal = document.getElementById('detailsModal');
     modal.addEventListener('click', function(e) {
         if (e.target === modal) {
-            hideDetails();
+            hideDetailsModal();
         }
     });
 
     // Cerrar el modal con la tecla Escape
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
-            hideDetails();
+            hideDetailsModal();
         }
     });
 });
 
-function showDetails(permission) {
+function showDetailsModal(permission) {
     console.log('Mostrando detalles de la solicitud:', permission);
     const modal = document.getElementById('detailsModal');
     
@@ -223,7 +224,7 @@ function showDetails(permission) {
     }
 }
 
-function hideDetails() {
+function hideDetailsModal() {
     const modal = document.getElementById('detailsModal');
     modal.style.display = 'none';
     modal.classList.add('hidden');
