@@ -324,14 +324,25 @@ class DashboardController extends Controller
 
     public function download($id)
     {
-        $employee = Employed::findOrFail($id);
-        $contract = $employee->contract;
+        try {
+            $employee = Employed::findOrFail($id);
+            $contract = $employee->contract;
 
-        if ($contract && Storage::disk('public')->exists($contract->pdf_url)) {
-            return Storage::disk('public')->download($contract->pdf_url);
+            if (!$contract) {
+                return redirect()->back()->with('error', 'No hay contrato disponible.');
+            }
+
+            $filePath = storage_path('app/public/' . $contract->pdf_url);
+            
+            if (!file_exists($filePath)) {
+                return redirect()->back()->with('error', 'El archivo del contrato no se encuentra.');
+            }
+
+            return response()->download($filePath);
+        } catch (\Exception $e) {
+            \Log::error('Error al descargar contrato: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Error al descargar el contrato.');
         }
-
-        return redirect()->back()->with('error', 'No hay contrato disponible.');
     }
 
     public function destroy($id)
