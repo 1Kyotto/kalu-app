@@ -116,7 +116,7 @@
 </div>
 
 <!-- Modal de Detalles -->
-<div id="detailsModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center">
+<div id="detailsModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
     <div class="bg-[#07060B] rounded-lg p-6 max-w-lg w-full mx-4">
         <div class="flex justify-between items-center mb-4">
             <h3 class="text-xl font-bold">Detalles de la Solicitud</h3>
@@ -127,6 +127,12 @@
             </button>
         </div>
         <div class="space-y-4">
+            @if($isAdmin)
+            <div>
+                <span class="text-gray-400">Empleado:</span>
+                <p id="permissionEmployee" class="font-medium"></p>
+            </div>
+            @endif
             <div>
                 <span class="text-gray-400">Tipo de Permiso:</span>
                 <p id="permissionType" class="font-medium"></p>
@@ -145,7 +151,7 @@
             </div>
             <div>
                 <span class="text-gray-400">Motivo:</span>
-                <p id="permissionReason" class="font-medium"></p>
+                <p id="permissionReason" class="font-medium whitespace-pre-wrap"></p>
             </div>
         </div>
     </div>
@@ -154,28 +160,55 @@
 
 @section('scripts')
 <script>
-function showDetails(permission) {
+document.addEventListener('DOMContentLoaded', function() {
+    // Cerrar el modal cuando se hace clic fuera de él
     const modal = document.getElementById('detailsModal');
-    const startDate = new Date(permission.start_date).toLocaleDateString();
-    const endDate = new Date(permission.end_date).toLocaleDateString();
-    const requestDate = new Date(permission.request_date).toLocaleDateString();
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+            hideDetails();
+        }
+    });
+
+    // Cerrar el modal con la tecla Escape
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
+            hideDetails();
+        }
+    });
+});
+
+function showDetails(permission) {
+    console.log('Mostrando detalles de la solicitud:', permission);
+    const modal = document.getElementById('detailsModal');
     
-    // Actualizar el contenido del modal
-    document.getElementById('permissionType').textContent = getPermissionTypeText(permission.permission_type);
-    document.getElementById('permissionDates').textContent = `${startDate} - ${endDate}`;
-    document.getElementById('permissionRequestDate').textContent = requestDate;
-    document.getElementById('permissionStatus').textContent = getStatusText(permission.status);
-    document.getElementById('permissionReason').textContent = permission.reason;
-    
-    // Mostrar el modal
-    modal.classList.remove('hidden');
-    modal.classList.add('flex');
+    try {
+        // Formatear fechas
+        const startDate = new Date(permission.start_date).toLocaleDateString('es-CL');
+        const endDate = new Date(permission.end_date).toLocaleDateString('es-CL');
+        const requestDate = new Date(permission.request_date).toLocaleDateString('es-CL');
+        
+        // Actualizar el contenido del modal
+        if (document.getElementById('permissionEmployee')) {
+            document.getElementById('permissionEmployee').textContent = permission.employee?.user?.name || 'No disponible';
+        }
+        document.getElementById('permissionType').textContent = getPermissionTypeText(permission.permission_type);
+        document.getElementById('permissionDates').textContent = `${startDate} - ${endDate}`;
+        document.getElementById('permissionRequestDate').textContent = requestDate;
+        document.getElementById('permissionStatus').textContent = getStatusText(permission.status);
+        document.getElementById('permissionReason').textContent = permission.reason || 'No se proporcionó motivo';
+        
+        // Mostrar el modal
+        modal.style.display = 'flex';
+        modal.classList.remove('hidden');
+    } catch (error) {
+        console.error('Error al mostrar los detalles:', error);
+    }
 }
 
 function hideDetails() {
     const modal = document.getElementById('detailsModal');
+    modal.style.display = 'none';
     modal.classList.add('hidden');
-    modal.classList.remove('flex');
 }
 
 function getPermissionTypeText(type) {
