@@ -83,7 +83,23 @@
                         </td>
                         <td class="px-6 py-4">
                             <div class="flex gap-2">
-                                <button onclick="showDetails({{ json_encode($permission) }})" 
+                                <button type="button" 
+                                    onclick="showDetails({
+                                        id: {{ $permission->id }},
+                                        permission_type: '{{ $permission->permission_type }}',
+                                        start_date: '{{ $permission->start_date }}',
+                                        end_date: '{{ $permission->end_date }}',
+                                        request_date: '{{ $permission->request_date }}',
+                                        status: '{{ $permission->status }}',
+                                        reason: '{{ addslashes($permission->reason) }}',
+                                        @if($isAdmin)
+                                        employee: {
+                                            user: {
+                                                name: '{{ $permission->employee->user->name }}'
+                                            }
+                                        },
+                                        @endif
+                                    })" 
                                     class="bg-gray-600 hover:bg-gray-500 text-white px-3 py-1 rounded text-sm">
                                     Detalles
                                 </button>
@@ -116,11 +132,11 @@
 </div>
 
 <!-- Modal de Detalles -->
-<div id="detailsModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
-    <div class="bg-[#07060B] rounded-lg p-6 max-w-lg w-full mx-4">
+<div id="detailsModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50" style="display: none;">
+    <div class="bg-[#07060B] rounded-lg p-6 max-w-lg w-full mx-4" onclick="event.stopPropagation();">
         <div class="flex justify-between items-center mb-4">
             <h3 class="text-xl font-bold">Detalles de la Solicitud</h3>
-            <button onclick="hideDetails()" class="text-gray-400 hover:text-white">
+            <button type="button" onclick="hideDetails()" class="text-gray-400 hover:text-white">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                 </svg>
@@ -191,6 +207,7 @@ function showDetails(permission) {
         if (document.getElementById('permissionEmployee')) {
             document.getElementById('permissionEmployee').textContent = permission.employee?.user?.name || 'No disponible';
         }
+        
         document.getElementById('permissionType').textContent = getPermissionTypeText(permission.permission_type);
         document.getElementById('permissionDates').textContent = `${startDate} - ${endDate}`;
         document.getElementById('permissionRequestDate').textContent = requestDate;
@@ -202,6 +219,7 @@ function showDetails(permission) {
         modal.classList.remove('hidden');
     } catch (error) {
         console.error('Error al mostrar los detalles:', error);
+        console.error('Datos recibidos:', permission);
     }
 }
 
