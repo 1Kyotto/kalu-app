@@ -8,10 +8,10 @@ use App\Models\Employed;
 class Contract extends Model
 {
     protected $table = 'contracts';
-    protected $fillable = ['pdf_url'];
+    protected $fillable = ['employees_id', 'pdf_url'];
 
     public function employed()
     {
-        return $this->belongsTo(Employed::class, 'contracts_id');
+        return $this->belongsTo(Employed::class, 'employees_id');
     }
 }

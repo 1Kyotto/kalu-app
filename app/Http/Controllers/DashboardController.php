@@ -266,7 +266,7 @@ class DashboardController extends Controller
                 'contract' => 'required|file|mimes:pdf|max:10240'
             ]);
 
-            $employee = Employed::findOrFail($request->employee_id);
+            $employee = Employed::with('contract')->findOrFail($request->employee_id);
             
             // Asegurarse de que el directorio existe
             $contractsPath = storage_path('app/public/contracts');
@@ -277,42 +277,44 @@ class DashboardController extends Controller
             // Generar un nombre único para el archivo
             $fileName = 'contract_' . $employee->id . '_' . time() . '.pdf';
             
+            DB::beginTransaction();
             try {
-                // Intentar mover el archivo
+                // Si ya existe un contrato, eliminarlo
+                if ($employee->contract) {
+                    $oldPath = $employee->contract->pdf_url;
+                    $employee->contract->delete();
+                    
+                    // Eliminar el archivo anterior si existe
+                    if (Storage::disk('public')->exists($oldPath)) {
+                        Storage::disk('public')->delete($oldPath);
+                    }
+                }
+
+                // Guardar el nuevo archivo
                 $path = $request->file('contract')->storeAs('contracts', $fileName, 'public');
-                
                 if (!$path) {
                     throw new \Exception('No se pudo guardar el archivo');
                 }
 
-                // Si ya existe un contrato, actualizar el pdf_url
-                if ($employee->contract) {
-                    // Eliminar el archivo anterior si existe
-                    if (Storage::disk('public')->exists($employee->contract->pdf_url)) {
-                        Storage::disk('public')->delete($employee->contract->pdf_url);
-                    }
-                    $employee->contract->pdf_url = $path;
-                    $employee->contract->save();
-                } else {
-                    // Crear nuevo contrato
-                    Contract::create([
-                        'employees_id' => $employee->id,
-                        'pdf_url' => $path
-                    ]);
-                }
+                // Crear nuevo contrato
+                Contract::create([
+                    'employees_id' => $employee->id,
+                    'pdf_url' => $path
+                ]);
 
-                return response()->json(['success' => true, 'message' => 'Contrato subido exitosamente']);
+                DB::commit();
+                return response()->json([
+                    'success' => true, 
+                    'message' => 'Contrato subido exitosamente'
+                ]);
             } catch (\Exception $e) {
-                \Log::error('Error al guardar el archivo: ' . $e->getMessage());
-                throw new \Exception('Error al guardar el archivo: ' . $e->getMessage());
+                DB::rollback();
+                // Si algo falla, eliminar el archivo que acabamos de subir
+                if (isset($path) && Storage::disk('public')->exists($path)) {
+                    Storage::disk('public')->delete($path);
+                }
+                throw $e;
             }
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            \Log::error('Error de validación: ' . json_encode($e->errors()));
-            return response()->json([
-                'success' => false,
-                'message' => 'Error de validación',
-                'errors' => $e->errors()
-            ], 422);
         } catch (\Exception $e) {
             \Log::error('Error al subir contrato: ' . $e->getMessage());
             return response()->json([
@@ -382,5 +384,15 @@ class DashboardController extends Controller
             \Log::error('Error al eliminar empleado: ' . $e->getMessage());
             return response()->json(['success' => false, 'error' => $e->getMessage()], 500);
         }
+    }
+
+    public function settings()
+    {
+        $user = auth()->user();
+        $employee = Employed::with('contract', 'position', 'user')
+            ->where('users_id', $user->id)
+            ->firstOrFail();
+
+        return view('settings.settings', compact('employee'));
     }
 }

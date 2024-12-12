@@ -13,11 +13,14 @@ return new class extends Migration
     {
         Schema::create('contracts', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('employees_id')->nullable();
+            $table->unsignedBigInteger('employees_id');
             $table->string('pdf_url');
             $table->timestamps();
 
-            $table->foreign('employees_id')->references('id')->on('employees');
+            $table->foreign('employees_id')
+                  ->references('id')
+                  ->on('employees')
+                  ->onDelete('cascade');
         });
     }
 
