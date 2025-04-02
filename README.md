@@ -29,6 +29,7 @@ Sistema de gestión integral para recursos humanos que permite administrar emple
 ```bash
 git clone https://github.com/1Kyotto/kalu-app.git
 cd kalu-app
+```
 
 -  Instala las dependencias
 
